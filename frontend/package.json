@@ -1,0 +1,15 @@
+{
+  "name": "slack.analyser",
+  "version": "1.0.0",
+  "description": "A front end app to display slack details",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "author": "navee",
+  "license": "ISC",
+  "dependencies": {
+    "es6-promise": "^4.2.6",
+    "fetch": "^1.1.0"
+  }
+}

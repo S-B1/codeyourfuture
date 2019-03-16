@@ -1,6 +1,6 @@
 package com.cyf.entities;
 
-@Entity
+//@Entity
 public class User
 {
     // TODO: create entity properties
