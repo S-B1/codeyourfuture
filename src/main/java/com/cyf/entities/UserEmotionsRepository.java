@@ -1,4 +1,7 @@
 package com.cyf.entities;
 
-public interface UserEmotionsRepository {
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface UserEmotionsRepository extends MongoRepository<UserEmotions, String>
+{
 }

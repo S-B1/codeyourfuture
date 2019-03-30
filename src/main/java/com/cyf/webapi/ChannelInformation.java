@@ -1,27 +1,35 @@
 package com.cyf.webapi;
 
+import com.cyf.entities.User;
+import com.cyf.entities.UserRepository;
 import com.cyf.utility.HelperMethods;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-import java.util.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
-public class ChannelInformation {
-
+public class ChannelInformation
+{
     Logger logger = LoggerFactory.getLogger(ChannelInformation.class);
     Map<String,String> userMap = new TreeMap<String,String>();
 
+    @Autowired
+    UserRepository userRepository;
+
     @Value("${token}")
     private String token;
-
-
-// To access above request add permission in your slackApi channels:read,channels:write,chat:write:user
 
     @RequestMapping("/api/channelList")
     public String getChannelsList()
@@ -32,7 +40,7 @@ public class ChannelInformation {
             JSONObject jsonObject = new JSONObject();
              output = HelperMethods.submitURL(https_url, jsonObject, token);
 
-        }catch (Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -50,37 +58,47 @@ public class ChannelInformation {
     }
 
     @RequestMapping("/api/usersList")
-    public String getUserList()
+    public String saveUserList()
     {
-        String output =" ";
+        String output = " ";
         try {
             String https_url = "https://slack.com/api/users.list";
             JSONObject jsonObject = new JSONObject();
             output = HelperMethods.submitURL(https_url, jsonObject, token);
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(output.toString());
-            JSONArray membersObject = (JSONArray) json.get("members");
+            JSONTokener temp = new JSONTokener(output.toString());
+            JSONObject json = new JSONObject(temp);
 
-           // JSONArray values = new JSONArray();
-           // values.add(membersObject);
+            JSONArray membersObj = (JSONArray)json.get("members");
+            System.out.println(membersObj.length());
 
-            for (int i = 0; i < membersObject.size(); i++)
+            for (int i = 0; i < membersObj.length(); i++)
             {
+                JSONObject membersDetails = (JSONObject)membersObj.get(i);
 
-                JSONObject user = (JSONObject) membersObject.get(i);
-                JSONObject profileObject = (JSONObject) user.get("profile");
-                System.out.println("profileObject"+profileObject);
-                if (profileObject.get("display_name") != null && !profileObject.get("display_name").equals("")) {
-                        System.out.println("id=" + user.get("id").toString() + "display_name=" + profileObject.get("display_name").toString());
-                        userMap.put(user.get("id").toString(), profileObject.get("display_name").toString());
-                    }
+                if ( membersDetails.get("is_bot").toString().equals("false") )
+                {
+                    JSONObject userDetails = (JSONObject)membersObj.get(i);
+                    JSONObject profile = userDetails.getJSONObject("profile");
 
+                    userRepository.save(new User(
+                            membersDetails.get("id").toString(),
+                            membersDetails.get("name").toString(),
+                            "")
+                    );
+                }
             }
-        }catch (Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
         return output;
+    }
+
+    @RequestMapping("/api/getUsersList")
+    public List<User> getUserList()
+    {
+        List<User> userList = userRepository.findAll();
+        return userList;
     }
 
     @RequestMapping("/api/usersConversations")
@@ -90,6 +108,7 @@ public class ChannelInformation {
         JSONObject jsonObject = new JSONObject();
         Iterator keys = userMap.keySet().iterator();
         logger.info("userMap="+userMap.size());
+
         for(Map.Entry<String,String> entry : userMap.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -100,13 +119,14 @@ public class ChannelInformation {
         return HelperMethods.submitURL(https_url, jsonObject, token);
     }
 
-
     @RequestMapping("/api/usersReactions")
     public String getUserReactions(@RequestParam String userName)
     {
         String https_url = "https://slack.com/api/reactions.list";
         JSONObject jsonObject = new JSONObject();
-        for(Map.Entry<String,String> entry : userMap.entrySet()) {
+
+        for (Map.Entry<String,String> entry : userMap.entrySet())
+        {
             String key = entry.getKey();
             String value = entry.getValue();
             logger.info(key + " => " + value);
@@ -117,4 +137,3 @@ public class ChannelInformation {
         return HelperMethods.submitURL(https_url, jsonObject, token);
     }
 }
-

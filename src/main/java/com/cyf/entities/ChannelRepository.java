@@ -1,4 +1,7 @@
 package com.cyf.entities;
 
-public class ChannelRepository {
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface ChannelRepository extends MongoRepository<Channel, String>
+{
 }

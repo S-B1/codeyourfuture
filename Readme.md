@@ -1,40 +1,20 @@
-# Steps to set up MySQL db as a docker container
+# Code Your Future: Student tracking system
 
-## What you'll need
-
-- MySQL version 5.6 or latest (This will be downloaded from docker hub)
-- Docker 16.8x or latest
+## About
+Project developed as part of one day Women Driven Development Expedia hackaton on 15th March 2019.
 
 
-### How to start:
-All containers are downloaded from docker hub `https://hub.docker.com`
-First install docker `https://docs.docker.com/docker-for-windows/install/`
+#### The tool:
+We want to create a remote monitoring system that automatically logs some basic activity of students in the public Slack channels so that students can understand what actions and frequency they should be aiming for. 
+This would also help instructors understand which students need most attention.
 
-Check if you have any containers running.
-```sh
-$ docker ps
-```
+Although it is not fully finished core functionality was created during the hackaton.
 
-Install/download mysql image locally. Set details for your specific container and for MySQL password.
-```sh
-$ docker run -p 3306:3306 --name StudentTracker -e MYSQL_ROOT_PASSWORD=<Your Password> -d mysql
-```
+#### Techonology:
+* [SpringBoot](https://spring.io/), Java 8. backend technology
+* [MongoDB](https://www.mongodb.com/) database set up in [AWS](https://aws.amazon.com/)
+* [HTML](https://www.w3.org/html/), [Bootstrap](https://getbootstrap.com/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) for the front end part
 
-Once installed check if it is running by using the command `docker ps`.
-![Image](container_id.png)
 
-Now let's log in into your container using your container ID.
-```sh
-$ docker exec -it <Container ID> /bin/bash
-```
-
-To exit the container type `exit`
-
-Let's log in our new MySQL installed
-
-```sh
-$ docker exec -it StudentTracker mysql -uroot -p
-```
-
-You will have something like this displayed in your console:
-![Image](docker_msqyl.png)
+## Links
+Charity website: [Code your future](https://codeyourfuture.io/)

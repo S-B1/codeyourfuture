@@ -1,6 +1,5 @@
 package com.cyf.webapi;
 
-import com.cyf.entities.User;
 import com.cyf.entities.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,9 @@ public class UserService
     @RequestMapping("/save")
     public String save()
     {
-        userRepository.save(new User("Paula", "email@email.com"));
-        return "save";
+//        userRepository.save(new User("2", "Paula", "email@email.com"));
+//        userRepository.save(new User("3", "Paula", "email@email.com"));
+//        userRepository.save(new User("4", "Paula", "email@email.com"));
+        return "user";
     }
 }

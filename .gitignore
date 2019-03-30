@@ -1,0 +1,10 @@
+.idea/
+.idea/workspace.xml
+*.iml
+*.iws
+*.ipr
+
+log/
+target/
+
+.DS_Store
